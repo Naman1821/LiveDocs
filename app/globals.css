@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "../node_modules/tailwindcss/index.css";
+@import "../node_modules/tw-animate-css/dist/tw-animate.css";
+@import "../node_modules/shadcn/dist/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -127,4 +127,637 @@
   html {
     @apply font-sans;
   }
+}
+/* The outer desk (scrollable area behind the paper). */
+.editor-container {
+  background-color: #f8f9fa;
+  padding-bottom: 80px;
+  /* Keeps horizontal layout stable when scrollbars reserve space (pairs with ruler inside this scroll area). */
+  scrollbar-gutter: stable;
+}
+
+.editor-zoom-root {
+  will-change: transform;
+}
+
+/* Base rich text defaults. */
+.tiptap {
+  width: 816px;
+  max-width: none;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Single continuous “paper” surface (virtual sheets separated by page-break gaps). */
+.tiptap.ProseMirror {
+  width: 816px;
+  min-height: 1056px;
+  background-color: #ffffff !important;
+  font-family: "Times New Roman", serif;
+  font-size: 11pt;
+  line-height: 1.15;
+  padding-top: 64px !important;
+  padding-bottom: 96px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 auto;
+  box-shadow: 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  outline: none;
+  position: relative;
+  counter-reset: page-counter;
+}
+
+.tiptap.ProseMirror > :not(hr[data-type="page-break"]):not(.tiptap-page-break):not(.page-break):not(.soft-page-break) {
+  max-width: calc(100% - var(--doc-left-boundary, 64px) - var(--doc-right-boundary, 64px));
+  margin-left: var(--doc-left-boundary, 64px) !important;
+  margin-right: var(--doc-right-boundary, 64px) !important;
+  box-sizing: border-box;
+}
+
+.tiptap h1 {
+  /* Title (Google Docs default ~36) */
+  font-size: 36pt;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0.75rem 0;
+}
+
+.tiptap h2 {
+  /* Subtitle (Google Docs default ~20) */
+  font-size: 20pt;
+  line-height: 1.3;
+  font-weight: 400;
+  font-style: italic;
+  color: #5f6368;
+  margin: 0.5rem 0;
+}
+
+.tiptap h3 {
+  /* Heading 1 (~16) */
+  font-size: 16pt;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.tiptap h4 {
+  /* Heading 2 (~14) */
+  font-size: 14pt;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0.65rem 0 0.2rem;
+}
+
+.tiptap h5 {
+  /* Heading 3 (~12) */
+  font-size: 12pt;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0.6rem 0 0.15rem;
+}
+
+.tiptap h6 {
+  /* Heading 4 (~11, all caps) */
+  font-size: 11pt;
+  line-height: 1.3;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0.55rem 0 0.15rem;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap li {
+  margin: 0.2rem 0;
+}
+
+.tiptap p {
+  margin: 0.35rem 0;
+}
+
+.tiptap a {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+}
+
+.tiptap .tableWrapper {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+.tiptap .tableWrapper table {
+  margin: 0;
+}
+
+.tiptap .doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+/* Table of contents rows imported from DOCX (toc 1–9). */
+.tiptap p.toc-level-1,
+.tiptap p.toc-level-2,
+.tiptap p.toc-level-3,
+.tiptap p.toc-level-4,
+.tiptap p.toc-level-5,
+.tiptap p.toc-level-6,
+.tiptap p.toc-level-7,
+.tiptap p.toc-level-8,
+.tiptap p.toc-level-9 {
+  margin: 0.15rem 0;
+}
+
+.tiptap p.toc-level-1 {
+  font-weight: 600;
+}
+
+.tiptap .doc-table td,
+.tiptap .doc-table th {
+  border: 1px dashed transparent;
+  padding: 0.5rem;
+  vertical-align: top;
+}
+
+.tiptap .doc-table.ProseMirror-selectednode td {
+  border: 1px dashed #cbd5e1;
+}
+
+.tiptap th,
+.tiptap td {
+  border: 1px solid #d4d4d8;
+  padding: 0.5rem;
+  vertical-align: top;
+  min-width: 100px;
+}
+
+.tiptap table[data-import-layout="signature-row"] {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.tiptap table[data-import-layout="signature-row"] td {
+  width: 50%;
+  border: none;
+  padding: 0.25rem 0;
+}
+
+.tiptap table[data-import-layout="signature-row"] td:last-child {
+  text-align: right;
+}
+
+.tiptap th {
+  background: #f4f4f5;
+  font-weight: 600;
+}
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: bottom;
+}
+
+/* Desk gap between virtual sheets (TipTap pageBreak + Mammoth fallbacks). */
+.tiptap hr[data-type="page-break"],
+.tiptap .tiptap-page-break,
+.tiptap .page-break,
+.tiptap .soft-page-break {
+  display: block;
+  box-sizing: content-box;
+  margin-left: -96px;
+  margin-right: -96px;
+  height: 40px;
+  background-color: #f8f9fa;
+  border-left: none;
+  border-right: none;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  margin-top: 96px;
+  margin-bottom: 96px;
+  position: relative;
+  counter-increment: page-counter;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Hide default marker */
+.tiptap hr[data-type="page-break"]::after,
+.tiptap .tiptap-page-break::after,
+.tiptap .page-break::after,
+.tiptap .soft-page-break::after {
+  content: none;
+}
+
+/* Footer page number on the white area above each desk gap */
+.tiptap hr[data-type="page-break"]::before,
+.tiptap .tiptap-page-break::before,
+.tiptap .page-break::before,
+.tiptap .soft-page-break::before {
+  content: counter(page-counter);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: #70757a;
+  font-family: Arial, sans-serif;
+}
+
+/* Guard: never render a leading page-break at document start (avoids blank first page). */
+.tiptap.ProseMirror > hr[data-type="page-break"]:first-child,
+.tiptap.ProseMirror > .tiptap-page-break:first-child,
+.tiptap.ProseMirror > .page-break:first-child,
+.tiptap.ProseMirror > .soft-page-break:first-child {
+  display: none !important;
+  margin: 0 !important;
+  height: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+/* Last sheet footer */
+.tiptap.ProseMirror::after {
+  counter-increment: page-counter;
+  content: counter(page-counter);
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #70757a;
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+}
+
+.ProseMirror-selectednode.tiptap-page-break,
+.ProseMirror-selectednode[data-type="page-break"] {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.tiptap .comment-hover-highlight {
+  background: rgba(26, 115, 232, 0.22);
+  border-radius: 2px;
+}
+
+.tiptap .center {
+  text-align: center;
+}
+
+[data-resize-container][style*="text-align: center"],
+[data-resize-container][style*="text-align:center"] {
+  display: inline-flex;
+  justify-content: center;
+}
+[data-resize-container][style*="text-align: right"],
+[data-resize-container][style*="text-align:right"] {
+  display: inline-flex;
+  justify-content: flex-end;
+}
+[data-resize-container][style*="text-align: left"],
+[data-resize-container][style*="text-align:left"] {
+  display: inline-flex;
+  justify-content: flex-start;
+}
+
+/*
+ * Inline images sit in the same paragraph; without margin they read as one block.
+ * Symmetric horizontal margin keeps a default gap image↔image and image↔text.
+ */
+.tiptap [data-resize-container][data-node="image"] {
+  margin-inline: 6px;
+  vertical-align: bottom;
+}
+
+/* Image resize: outer node = data-resize-container (yahi pe ProseMirror-selectednode lagta hai) */
+[data-resize-wrapper] {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+  user-select: none;
+}
+
+[data-resize-wrapper] img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Green border sirf image ke around (wrapper = tight fit) */
+[data-resize-container].ProseMirror-selectednode [data-resize-wrapper] {
+  outline: 3px solid #22c55e;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+[data-resize-container].ProseMirror-selectednode [data-resize-handle],
+[data-resize-container][data-resizing] [data-resize-handle] {
+  opacity: 1;
+}
+
+[data-resize-handle] {
+  opacity: 0;
+  background: #3b82f6;
+  border-radius: 3px;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+
+[data-resize-handle="right"],
+[data-resize-handle="left"] {
+  width: 6px;
+  cursor: col-resize;
+}
+
+[data-resize-handle="top"],
+[data-resize-handle="bottom"] {
+  height: 6px;
+  cursor: row-resize;
+}
+
+[data-resize-handle="top-left"],
+[data-resize-handle="top-right"],
+[data-resize-handle="bottom-left"],
+[data-resize-handle="bottom-right"] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+[data-resize-handle="top-left"] { cursor: nwse-resize; }
+[data-resize-handle="top-right"] { cursor: nesw-resize; }
+[data-resize-handle="bottom-left"] { cursor: nesw-resize; }
+[data-resize-handle="bottom-right"] { cursor: nwse-resize; }
+
+.tiptap-image-align-wrap {
+  max-width: 100%;
+}
+
+/* Geometric brochure (inline layout): center sheet; strip image wrapper gutters. */
+.tiptap.ProseMirror > div.brochure-page.doc-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.tiptap div.brochure-page [data-resize-container][data-node="image"] {
+  margin-inline: 0 !important;
+}
+
+.tiptap.ProseMirror > div.letter-page.doc-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.tiptap div.letter-page [data-resize-container][data-node="image"] {
+  margin-inline: 0 !important;
+}
+
+/* Letter signature: TipTap / prose defaults can strip inline `color` on `<p>` — force bar green. */
+.tiptap .letter-page p.letter-signature-name,
+.tiptap .letter-page p.letter-signature-name span {
+  color: #57ba86 !important;
+}
+
+/*
+ * Letter (Spearmint): green rule at the *top* of each new sheet — one image at the
+ * bottom of each desk gap (just above page 2, 3, …). First sheet uses the template’s
+ * top `<img>`. No bottom rule on any sheet.
+ */
+.tiptap.ProseMirror:has(.letter-page.doc-content) hr[data-type="page-break"],
+.tiptap.ProseMirror:has(.letter-page.doc-content) .tiptap-page-break,
+.tiptap.ProseMirror:has(.letter-page.doc-content) .page-break,
+.tiptap.ProseMirror:has(.letter-page.doc-content) .soft-page-break {
+  background-color: #f8f9fa;
+  background-image: url("/Letter/images/image1.png");
+  background-repeat: no-repeat;
+  background-position: center calc(100% - 5px);
+  background-size: min(624px, calc(100% - 128px)) auto;
+}
+
+@media print {
+  [data-resize-handle] {
+    display: none !important;
+  }
+
+  header,
+  nav,
+  .no-print {
+    display: none !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    clip-path: inset(50%) !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  .document-print-root {
+    min-height: auto !important;
+    background: white !important;
+  }
+
+  .tiptap {
+    box-shadow: none !important;
+    border: none !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .tiptap.ProseMirror {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .editor-container {
+    background: white !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .editor-zoom-shell {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .editor-zoom-root {
+    width: 100% !important;
+    transform: none !important;
+    transform-origin: top left !important;
+  }
+
+  [data-liveblocks],
+  [id*="liveblocks" i],
+  [class*="liveblocks" i],
+  a[href*="liveblocks.io"],
+  iframe[src*="liveblocks.io"] {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .tiptap hr[data-type="page-break"],
+  .tiptap .tiptap-page-break,
+  .tiptap .page-break,
+  .tiptap .soft-page-break {
+    break-after: page;
+    page-break-after: always;
+    box-shadow: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .tiptap.ProseMirror::after,
+  .tiptap hr[data-type="page-break"]::before,
+  .tiptap .tiptap-page-break::before,
+  .tiptap .page-break::before,
+  .tiptap hr[data-type="page-break"]::after,
+  .tiptap .tiptap-page-break::after,
+  .tiptap .page-break::after,
+  .tiptap .soft-page-break::before,
+  .tiptap .soft-page-break::after {
+    content: none !important;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+}
+
+/*
+  WebKit/Safari sometimes still paints toolbar <select> text under @media print.
+  beforeprint adds html.print-layout so chrome is gone before the print snapshot.
+*/
+html.print-layout header,
+html.print-layout nav,
+html.print-layout .no-print {
+  display: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  clip-path: inset(50%) !important;
+  position: absolute !important;
+  width: 0 !important;
+  left: -9999px !important;
+  pointer-events: none !important;
+}
+
+html.print-layout body {
+  background: white !important;
+}
+
+html.print-layout .document-print-root {
+  min-height: auto !important;
+  background: white !important;
+}
+
+html.print-layout .editor-container {
+  background: none !important;
+  background-color: #ffffff !important;
+}
+
+html.print-layout .editor-zoom-root {
+  width: 100% !important;
+  transform: none !important;
+}
+
+html.print-layout .editor-zoom-shell {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+
+html.print-layout [data-liveblocks],
+html.print-layout [id*="liveblocks" i],
+html.print-layout [class*="liveblocks" i],
+html.print-layout a[href*="liveblocks.io"],
+html.print-layout iframe[src*="liveblocks.io"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Document header — shop-style LED ticker */
+@keyframes ai-led-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ai-led-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: ai-led-marquee-scroll linear infinite;
+  animation-duration: 18s;
+}
+
+/** AI-off welcome ticker: slightly faster scroll than default marquee. */
+.ai-led-marquee-track--ai-off {
+  animation-duration: 12s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-led-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* Liveblocks injected brand badge (free tier) */
+#liveblocks-badge,
+#liveblocks-badge-hide-button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
