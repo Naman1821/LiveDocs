@@ -1800,7 +1800,7 @@ function CollaborativeEditor({
     }
     if (!isValidGeminiApiKeyShape(k)) {
       setAiByokFormError(
-        'Invalid Gemini API key. Keys from Google AI Studio start with "AIza" and are about 39 characters.',
+        'Invalid Gemini API key. Keys from Google AI Studio start with "AIza" or "AQ." and are about 39 characters.',
       );
       return false;
     }
@@ -2271,7 +2271,7 @@ function CollaborativeEditor({
                   className="pr-10 font-mono text-sm"
                   type={byokNewKeyVisible ? "text" : "password"}
                   autoComplete="off"
-                  placeholder="AIza…"
+                  placeholder="AIza… or AQ..."
                   value={aiByokDraft}
                   onChange={(e) => setAiByokDraft(e.target.value)}
                 />
@@ -2387,7 +2387,7 @@ function CollaborativeEditor({
                     className="pr-10 font-mono text-sm"
                     type={byokNewKeyVisible ? "text" : "password"}
                     autoComplete="off"
-                    placeholder="AIza…"
+                    placeholder="AIza… or AQ..."
                     value={aiByokDraft}
                     onChange={(e) => setAiByokDraft(e.target.value)}
                   />

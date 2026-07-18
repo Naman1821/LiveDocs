@@ -1,5 +1,5 @@
 /** Google AI Studio / Gemini API keys are opaque strings; typical length ~39 and start with `AIza`. */
-const GEMINI_API_KEY_RE = /^AIza[0-9A-Za-z_-]{32,200}$/;
+const GEMINI_API_KEY_RE = /^(?:AIza[0-9A-Za-z_-]{32,200}|AQ\.[0-9A-Za-z_-]{20,400})$/;
 
 export function isValidGeminiApiKeyShape(key: string): boolean {
   const t = key.trim();

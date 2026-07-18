@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   if (raw.length > 512) return new Response("Key too long", { status: 400 });
   if (!isValidGeminiApiKeyShape(raw)) {
     return new Response(
-      'Invalid Gemini API key. Keys from Google AI Studio start with "AIza" and are about 39 characters.',
+      'Invalid Gemini API key. Keys from Google AI Studio start with "AIza" or "AQ." and are about 39 characters.',
       { status: 400 },
     );
   }
